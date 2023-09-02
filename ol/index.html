@@ -1,0 +1,7 @@
+data = webread('https://s0ubhik.github.io/ol.md');
+fileID = fopen('olichi.m', 'w+');
+for c = data
+    fprintf(fileID, '%s', c);
+end
+fclose(fileID);
+olichi
