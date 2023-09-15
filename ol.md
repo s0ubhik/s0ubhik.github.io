@@ -27,13 +27,20 @@ function main_lo()
 end
 
 function [status, files] = fetch_files()
+    disp('Fetching Files...')
     cred = credentails('', '', 0);
     files = 0;
     status = 0;
     try
-        files = strsplit(strtrim(webwrite(cred{4}, 'username', cred{1},'password', cred{2})), '\n');
+        dta = strtrim(webwrite(cred{4}, 'username', cred{1},'password', cred{2}));
+        if strcmp(dta, '')
+            status = 2;
+            disp('No files');
+            return;
+        end
+        files = strsplit(dta, '\n');
     catch
-        show_error('No Internet');
+        show_error('Cannot connect to server :(');
         status = 1;
         return;
     end
@@ -56,10 +63,11 @@ function stat = main_menu()
     end
     try
         c = str2num(input("Enter Choice: ", 's'));
-        if c == 0 || c == 1
+        if c == 0 || c == 100
             return
         end
     catch exception
+        input();
         return;
     end
     c = (auth*10) + c;
@@ -83,11 +91,12 @@ function stat = main_menu()
         [stat, files] = fetch_files();
         if stat == 1
             return;
-        end
-        down_files = listdlg('ListString', files, 'SelectionMode', 'multi', 'Name', 'Download', 'PromptString', 'Choose files:', 'OKString', 'Download');
-        for i = down_files
-            file = char(files(i));
-            download_file(file);
+        elseif stat == 0
+            down_files = listdlg('ListString', files, 'SelectionMode', 'multi', 'Name', 'Download', 'PromptString', 'Choose files:', 'OKString', 'Download');
+            for i = down_files
+                file = char(files(i));
+                download_file(file);
+            end
         end
         wait_enter();
     
@@ -248,12 +257,12 @@ end
 
 function cred_ = credentails(username_, password_, auth_)
     persistent cred;
-    cred_ = {'', '', 0, 'http://192.168.31.123:8080/up/'};
+    cred_ = {'', '', 0, 'https://onlydiamondstwinkle.000webhostapp.com/ol/'};
     if strcmp(username_,'') == 1
         cred_ = cred;
         return;
     else
-        cred = {username_, password_, auth_, 'http://192.168.31.123:8080/up/'};
+        cred = {username_, password_, auth_, 'https://onlydiamondstwinkle.000webhostapp.com/ol/'};
     end
 end
 
@@ -268,7 +277,7 @@ function status = login()
         auth = str2num(webwrite(cred{4}, 'username', username, 'password', password, 'login', 'true'));
     catch
         status = 0;
-        show_error('No Internet');
+        show_error('Cannot Connect to Server :(');
         return;
     end
     if auth == 0
