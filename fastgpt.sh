@@ -131,7 +131,7 @@ if [ "$?" != "0" ]; then
 fi
 
 which node > /dev/null
-if [ "$?" != "0" ] || [ $(node -v | cut -d '.' -f1) != "v18" ]; then
+if [ "$?" != "0" ] || [ "$(node -v | cut -d '.' -f1)" != "v18" ]; then
     blt "Installing NodeJS 18.x ..."
         job sudo apt-get install -y ca-certificates curl gnupg
         job sudo mkdir -p /etc/apt/keyrings
@@ -165,5 +165,13 @@ fi
 
 blt "Installing Packages ..."
   cd FastGPT
+  # pnpm
+  export PNPM_HOME="/home/soubhik/.local/share/pnpm"
+  case ":$PATH:" in
+    *":$PNPM_HOME:"*) ;;
+    *) export PATH="$PNPM_HOME:$PATH" ;;
+  esac
+  # pnpm end
+
   pnpm i >> $logf 2>&1 
   check_out
