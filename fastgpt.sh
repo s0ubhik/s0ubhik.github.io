@@ -165,5 +165,5 @@ fi
 
 blt "Installing Packages ..."
   cd FastGPT
-  job pnpm i
+  pnpm i >> $logf 2>&1 
   check_out
