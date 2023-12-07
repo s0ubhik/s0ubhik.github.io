@@ -159,7 +159,7 @@ fi
 
 if [ ! -d FastGPT ]; then
   blt "Cloning FastGPT ..."
-    job git clone https://github.com/labring/FastGPT.git
+    job git clone https://github.com/s0ubhik/FastGPT.git
     check_out
 fi
 
